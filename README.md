@@ -38,6 +38,8 @@
   - 按住 Shift → 直接 return，交还原生菜单
 - 事件绑在每个 `<tabbrowser-tabs>` 上、而不是每个标签上，所以标签增删不影响，也不用反复重绑。
 
+> **改 `tabutils.cfg` 时注意**：Firefox 会**跳过该文件的第一行**（历史原因，第一行原本用于存放混淆值）。所以第一行必须留空或是注释，真正的代码从第二行开始。删掉第一行注释会让 `try {` 顶到首行而被整行忽略，脚本直接不执行——这是最容易被忽略的坑。
+
 ## 安装
 
 ### 方式一：脚本（推荐）
@@ -76,7 +78,7 @@ cat /tmp/firefox-tabutils.log
 排错时注意两点：
 
 - 只有 `autoconfig loaded`、没有 `bound ok`：说明脚本加载了但窗口绑定失败，多为 Firefox 大版本改了 `#tabbrowser-tabs` 结构。
-- **一行都没有**：autoconfig 没被加载。检查 `autoconfig.js` 是否在 `defaults/pref/` 下、`tabutils.cfg` 是否在安装根目录、以及是否有另一个 `general.config.filename` 被更早的设置覆盖。
+- **一行都没有**：autoconfig 没被加载。检查 `autoconfig.js` 是否在 `defaults/pref/` 下、`tabutils.cfg` 是否在安装根目录、是否忘了保留第一行注释（见上文「改 tabutils.cfg 时注意」）、以及是否有另一个 `general.config.filename` 被更早的设置覆盖。
 - `--headless` 启动只会有 `autoconfig loaded`（headless 不创建浏览器窗口，不触发 `browser-delayed-startup-finished`），别误判成失败。
 
 脚本自检日志写在 `/tmp` 下，方便排查；不需要的话把 `tabutils.cfg` 里的 `LOG_PATH` 相关代码删掉即可（用 `try/catch` 包着，不写日志不影响功能）。
